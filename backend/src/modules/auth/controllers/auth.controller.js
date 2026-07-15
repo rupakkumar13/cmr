@@ -5,7 +5,7 @@ const setRefreshTokenCookie = (res, token, expiresAt) => {
   res.cookie('refreshToken', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: 'none',
     expires: expiresAt,
   });
 };
@@ -67,7 +67,7 @@ class AuthController {
       res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
+        sameSite: 'none'
       });
 
       res.status(200).json({
