@@ -3,9 +3,16 @@ import { Server } from 'socket.io';
 let io;
 
 export const initSocket = (server) => {
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://cmr-lilac-sigma.vercel.app',
+    process.env.FRONTEND_URL
+  ].filter(Boolean);
+
   io = new Server(server, {
     cors: {
-      origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+      origin: allowedOrigins,
       credentials: true,
       methods: ['GET', 'POST']
     }
