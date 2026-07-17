@@ -93,7 +93,7 @@ const PayrollManager = () => {
                         ID: {slip.employee?.employeeId} | Month: {slip.month}/{slip.year}
                       </div>
                       <div className="text-[11px] text-gray-600 font-bold">
-                        Basic: ${slip.basicSalary} | Allw: ${slip.allowances} | Ded: ${slip.deductions}
+                        Basic: ₹{slip.basicSalary} | Allw: ₹{slip.allowances} | Ded: ₹{slip.deductions}
                       </div>
                     </div>
 
@@ -145,9 +145,9 @@ const PayrollManager = () => {
                     </span>
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-[10px] text-gray-500 font-bold">
-                    <div>Basic: ${slip.basicSalary}</div>
-                    <div>Allw: ${slip.allowances}</div>
-                    <div>Ded: ${slip.deductions}</div>
+                    <div>Basic: ₹{slip.basicSalary}</div>
+                    <div>Allw: ₹{slip.allowances}</div>
+                    <div>Ded: ₹{slip.deductions}</div>
                   </div>
                   <div className="pt-1.5 border-t border-gray-100 flex justify-between font-bold">
                     <span>Net Salary Paid:</span>

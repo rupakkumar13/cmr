@@ -144,7 +144,7 @@ const PurchaseOrderList = () => {
                         {item.productId?.name || 'Unknown SKU'} ({item.productId?.sku})
                       </span>
                       <span className="text-gray-500 font-bold font-mono">
-                        {item.quantity} x ${item.purchasePrice}
+                        {item.quantity} x ₹{item.purchasePrice}
                       </span>
                     </div>
                   ))}

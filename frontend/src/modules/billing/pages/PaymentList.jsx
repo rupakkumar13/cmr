@@ -29,7 +29,7 @@ const PaymentList = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
-  const { register, handleSubmit, reset, setValue } = useForm();
+  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm();
 
   useEffect(() => {
     dispatch(fetchPayments());
@@ -49,7 +49,7 @@ const PaymentList = () => {
   const filteredInvoices = invoices.filter(
     (inv) =>
       String(inv.customerId?._id || inv.customerId) === String(selectedCustId) &&
-      inv.invoiceStatus === 'SENT' &&
+      inv.invoiceStatus !== 'CANCELLED' &&
       inv.paymentStatus !== 'PAID'
   );
 
@@ -219,7 +219,7 @@ const PaymentList = () => {
                         <div className="text-[9px] text-gray-400 font-semibold">{compName}</div>
                       </td>
                       <td className="p-3.5 text-right font-extrabold text-green-700">
-                        {p.paymentStatus === 'REFUNDED' ? '-' : '+'}${p.amount.toLocaleString()}
+                        {p.paymentStatus === 'REFUNDED' ? '-' : '+'}₹{p.amount.toLocaleString()}
                       </td>
                       <td className="p-3.5 text-gray-500 font-semibold">
                         {new Date(p.paymentDate || p.createdAt).toLocaleString()}
@@ -294,34 +294,42 @@ const PaymentList = () => {
                     required: true,
                     onChange: (e) => setSelectedCustId(e.target.value)
                   })}
-                  className="w-full bg-white border border-gray-300 rounded-lg py-2 px-3 focus:outline-none text-gray-700 text-xs font-semibold cursor-pointer"
+                  className={`w-full bg-white border rounded-lg py-2 px-3 focus:outline-none text-gray-700 text-xs font-semibold cursor-pointer ${errors.customerId ? 'border-red-500 focus:ring-red-200' : 'border-gray-300'}`}
                 >
                   <option value="">Choose Customer...</option>
                   {customers.map(c => (
                     <option key={c._id} value={c._id}>{c.customerName} ({c.companyName})</option>
                   ))}
                 </select>
+                {errors.customerId && (
+                  <p className="text-red-500 text-[10px] font-semibold mt-0.5">Customer is required</p>
+                )}
               </div>
 
               <div className="space-y-1">
                 <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider">Select Open Invoice *</label>
                 <select
-                  {...register('invoiceId', { required: true })}
-                  disabled={!selectedCustId}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    const matched = invoices.find(i => i._id === val);
-                    if (matched) {
-                      setValue('amount', matched.remainingAmount);
+                  {...register('invoiceId', {
+                    required: true,
+                    onChange: (e) => {
+                      const val = e.target.value;
+                      const matched = invoices.find(i => i._id === val);
+                      if (matched) {
+                        setValue('amount', matched.remainingAmount);
+                      }
                     }
-                  }}
-                  className="w-full bg-white border border-gray-300 rounded-lg py-2 px-3 focus:outline-none text-gray-700 text-xs font-semibold disabled:bg-slate-50 cursor-pointer"
+                  })}
+                  disabled={!selectedCustId}
+                  className={`w-full bg-white border rounded-lg py-2 px-3 focus:outline-none text-gray-700 text-xs font-semibold disabled:bg-slate-50 cursor-pointer ${errors.invoiceId ? 'border-red-500 focus:ring-red-200' : 'border-gray-300'}`}
                 >
                   <option value="">{selectedCustId ? 'Choose Invoice...' : 'Please choose Customer first'}</option>
                   {filteredInvoices.map(i => (
-                    <option key={i._id} value={i._id}>{i.invoiceNumber} [Remaining: ${i.remainingAmount}]</option>
+                    <option key={i._id} value={i._id}>{i.invoiceNumber} [Remaining: ₹{i.remainingAmount}]</option>
                   ))}
                 </select>
+                {errors.invoiceId && (
+                  <p className="text-red-500 text-[10px] font-semibold mt-0.5">Invoice selection is required</p>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -329,7 +337,7 @@ const PaymentList = () => {
                   <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider">Payment Method *</label>
                   <select
                     {...register('paymentMethod', { required: true })}
-                    className="w-full bg-white border border-gray-300 rounded-lg py-2 px-3 focus:outline-none text-gray-700 text-xs font-semibold cursor-pointer"
+                    className={`w-full bg-white border rounded-lg py-2 px-3 focus:outline-none text-gray-700 text-xs font-semibold cursor-pointer ${errors.paymentMethod ? 'border-red-500 focus:ring-red-200' : 'border-gray-300'}`}
                   >
                     <option value="Cash">Cash</option>
                     <option value="UPI">UPI</option>
@@ -339,16 +347,24 @@ const PaymentList = () => {
                     <option value="Cheque">Cheque</option>
                     <option value="Wallet">Wallet</option>
                   </select>
+                  {errors.paymentMethod && (
+                    <p className="text-red-500 text-[10px] font-semibold mt-0.5">Method is required</p>
+                  )}
                 </div>
 
                 <div className="space-y-1">
                   <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider">Amount Paid (₹) *</label>
                   <input
-                    {...register('amount', { required: true })}
+                    {...register('amount', { required: true, min: 0.01 })}
                     type="number"
                     step="0.01"
-                    className="w-full bg-white border border-gray-300 rounded-lg py-2 px-3 focus:outline-none font-semibold text-xs"
+                    className={`w-full bg-white border rounded-lg py-2 px-3 focus:outline-none font-semibold text-xs ${errors.amount ? 'border-red-500 focus:ring-red-200' : 'border-gray-300'}`}
                   />
+                  {errors.amount && (
+                    <p className="text-red-500 text-[10px] font-semibold mt-0.5">
+                      {errors.amount.type === 'min' ? 'Must be > 0' : 'Amount is required'}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -415,7 +431,7 @@ const PaymentList = () => {
               <div className="border border-green-200 bg-green-50/20 p-4 rounded-xl text-center space-y-1">
                 <div className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Amount Paid</div>
                 <div className="text-2xl font-extrabold text-green-700">
-                  {viewingPayment.paymentStatus === 'REFUNDED' ? '-' : ''}${viewingPayment.amount.toLocaleString()}
+                  {viewingPayment.paymentStatus === 'REFUNDED' ? '-' : ''}₹{viewingPayment.amount.toLocaleString()}
                 </div>
                 <div className="text-[9px] font-bold uppercase tracking-wider text-gray-400 mt-1">
                   Status: {viewingPayment.paymentStatus}

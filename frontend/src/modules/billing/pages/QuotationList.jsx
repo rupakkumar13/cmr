@@ -1007,22 +1007,23 @@ const QuotationList = ({ searchQuery }) => {
                         ) : (
                           <>
                             <select
-                              {...register(`products.${index}.productId`)}
-                              className="w-full bg-white border border-gray-300 rounded-lg p-1 text-[10px] focus:outline-none text-gray-700 font-bold cursor-pointer"
-                              onChange={(e) => {
-                                const pId = e.target.value;
-                                const prod = products.find(p => p._id === pId);
-                                if (prod) {
-                                  setValue(`products.${index}.unitPrice`, prod.price || 0);
-                                  setValue(`products.${index}.name`, prod.name);
-                                } else {
-                                  setValue(`products.${index}.name`, '');
+                              {...register(`products.${index}.productId`, {
+                                onChange: (e) => {
+                                  const pId = e.target.value;
+                                  const prod = products.find(p => p._id === pId);
+                                  if (prod) {
+                                    setValue(`products.${index}.unitPrice`, prod.price || 0);
+                                    setValue(`products.${index}.name`, prod.name);
+                                  } else {
+                                    setValue(`products.${index}.name`, '');
+                                  }
                                 }
-                              }}
+                              })}
+                              className="w-full bg-white border border-gray-300 rounded-lg p-1 text-[10px] focus:outline-none text-gray-700 font-bold cursor-pointer"
                             >
                               <option value="">Choose product...</option>
                               {products.map(p => (
-                                <option key={p._id} value={p._id}>{p.name} (${p.price})</option>
+                                <option key={p._id} value={p._id}>{p.name} (₹{p.price})</option>
                               ))}
                             </select>
                             <input type="hidden" {...register(`products.${index}.name`)} />

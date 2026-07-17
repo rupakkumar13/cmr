@@ -227,8 +227,8 @@ const ProductList = ({ searchQuery }) => {
                       </td>
                       <td className="p-4">
                         <div className="space-y-0.5 font-bold">
-                          <div className="text-gray-500">Buy: ${p.purchasePrice}</div>
-                          <div className="text-blue-600">Sell: ${p.sellingPrice}</div>
+                          <div className="text-gray-500">Buy: ₹{p.purchasePrice}</div>
+                          <div className="text-blue-600">Sell: ₹{p.sellingPrice}</div>
                         </div>
                       </td>
                       <td className="p-4 text-gray-600 truncate max-w-44">{p.supplierId?.companyName || 'None'}</td>

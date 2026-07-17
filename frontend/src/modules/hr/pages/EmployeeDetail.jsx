@@ -244,7 +244,7 @@ const EmployeeDetail = ({ employeeId, onBack }) => {
                   <div key={slip._id} className="p-3 flex items-center justify-between text-xs font-medium text-gray-700">
                     <div className="space-y-0.5">
                       <div className="font-bold text-gray-900">Payslip - Month {slip.month}/{slip.year}</div>
-                      <div className="text-[10px] text-slate-500 font-bold">Net Salary: ${slip.netSalary}</div>
+                      <div className="text-[10px] text-slate-500 font-bold">Net Salary: ₹{slip.netSalary}</div>
                     </div>
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
                       slip.status === 'PAID' 

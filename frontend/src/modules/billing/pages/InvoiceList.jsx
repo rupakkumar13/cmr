@@ -554,13 +554,13 @@ const InvoiceList = ({ searchQuery }) => {
                     {originType === 'DEAL' ? (
                       activeOriginDeals.map(d => (
                         <option key={d._id} value={d._id}>
-                          {d.dealCode} - {d.title} ({d.customer?.companyName || 'Private Corp'}) [Value: ${d.amount}]
+                          {d.dealCode} - {d.title} ({d.customer?.companyName || 'Private Corp'}) [Value: ₹{d.amount}]
                         </option>
                       ))
                     ) : (
                       activeOriginQuotes.map(q => (
                         <option key={q._id} value={q._id}>
-                          {q.quotationNumber} - Deal: {q.dealId?.title || 'N/A'} ({q.customerId?.companyName || 'Private Corp'}) [Total: ${q.totalAmount}]
+                          {q.quotationNumber} - Deal: {q.dealId?.title || 'N/A'} ({q.customerId?.companyName || 'Private Corp'}) [Total: ₹{q.totalAmount}]
                         </option>
                       ))
                     )}
@@ -918,7 +918,7 @@ const InvoiceList = ({ searchQuery }) => {
                     <div>Additional Discount: <span className="font-semibold text-red-600">-₹{viewingInvoice.additionalDiscount}</span></div>
                   )}
                   <div>Shipping: <span className="font-semibold">+₹{viewingInvoice.shippingCharge || 0}</span></div>
-                  <div className="text-sm text-blue-600 font-extrabold mt-1">Grand Total: ${viewingInvoice.grandTotal}</div>
+                  <div className="text-sm text-blue-600 font-extrabold mt-1">Grand Total: ₹{viewingInvoice.grandTotal}</div>
                 </div>
               </div>
             </div>
